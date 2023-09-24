@@ -2,15 +2,6 @@
 
 command! RD :redraw!
 
-" Use spaces for indentation (replace with 0 to use tabs)
-set expandtab
-
-" Number of spaces for each level of indentation
-set shiftwidth=4
-
-" Number of spaces for a displayed tab character
-set tabstop=4
-
 
 " LLM running
 
@@ -25,7 +16,7 @@ function! s:RunLLM(model_flag)
     let l:yanked_text = getreg('0')
 
     " Save the current buffer number
-    let l:current_buf = bufnr('%')
+    " let l:current_buf = bufnr('%')
 
     " Save the temporary file paths
     let l:temp_in = "/tmp/llm_in.txt"
@@ -35,13 +26,13 @@ function! s:RunLLM(model_flag)
     call writefile(split(l:yanked_text, '\n'), l:temp_in)
 
     " Run the llm command and pipe the yank buffer through it
-    silent execute "!cat " . l:temp_in . " | llm " . a:model_flag . " > " . l:temp_out
+    execute "!cat " . l:temp_in . " | llm " . a:model_flag . " > " . l:temp_out
 
     " Read the output back into Vim at the current cursor position
-    silent execute "r " . l:temp_out
+    execute "r " . l:temp_out
 
     " Add the 'AI: ' prefix to the output
-    silent execute "normal! IAI: "
+    execute "normal! IAI: "
 
     " Make the changes undoable in one step
     undojoin
@@ -118,36 +109,13 @@ function! YankCodeBlock()
 endfunction 
 
 
-" python
-
-
-" OLD: Function to run the Python interpreter
-function! s:RunPython()
-    " Temporary files
-    let l:temp_in = "/tmp/py_in.txt"
-    let l:temp_out = "/tmp/py_out.txt"
-
-    " Save the current buffer number
-    let l:current_buf = bufnr('%')
-
-    " Get the yanked text
-    let l:yanked_text = getreg('0')
-
-    " Write the yanked text to the temporary input file
-    call writefile(split(l:yanked_text, '\n'), l:temp_in)
-
-    " Run the Python interpreter and pipe the yank buffer through it
-    silent execute "!python3 -c 'exec(open(\"" . l:temp_in . "\").read())' > " . l:temp_out . " 2>&1"
-
-    " Read the output back into Vim at the current cursor position
-    silent execute "r " . l:temp_out
-
-    " Add the 'Python Output: ' prefix to the output
-    silent execute "normal! IPython Output: "
-endfunction
-
-
 " Generic code running
+
+" Define the custom command :PY
+command! PY call s:RunCode("py")
+
+" Define the custom command :SH
+command! SH call s:RunCode("sh")
 
 function! s:RunCode(type)
     " Temporary files
@@ -167,23 +135,17 @@ function! s:RunCode(type)
     " Choose the interpreter and run it
     if a:type == 'py'
         let l:command = "!python3 -c 'exec(open(\"" . l:temp_in . "\").read())' > " . l:temp_out . " 2>&1"
-        let l:prefix = 'IPython Output: '
+        let l:prefix = 'I-- Python Output: '
     elseif a:type == 'sh'
         let l:command = "!sh " . l:temp_in . " > " . l:temp_out . " 2>&1"
-        let l:prefix = 'IShell Output: '
+        let l:prefix = 'I-- Shell Output: '
     endif
 
-    silent execute l:command
+    execute l:command
 
     " Read the output back into Vim at the current cursor position
-    silent execute "r " . l:temp_out
+    execute "r " . l:temp_out
 
     " Add the prefix to the output
-    silent execute "normal! " . l:prefix
+    execute "normal! " . l:prefix
 endfunction
-
-" Define the custom command :PY
-command! PY call s:RunCode("py")
-
-" Define the custom command :SH
-command! SH call s:RunCode("sh")
