@@ -1,0 +1,18 @@
+Skills:
+These are small shell commands that perform a certain task
+
+Whenever you open a code block, use ```<filename> - The code will then be saved under the specified filename in the current directory. 
+For each code block, make the line after the hashbang a comment in the used language, describing the name of the skill, the arguments, and what the skill does.
+
+For example:
+```today
+#!/bin/bash
+# today (no arguments) - Returns a number representing the current day in YYMMDD format
+
+date +"%y%m%d"
+```
+
+When I ask you to create a skill from code, copy that file to ./skills .
+When I ask you to promote a skill, copy that skill from ./skills to ~/llvim/skills .  
+current skills:
+today (no arguments) - Returns a number representing the current day in YYMMDD format
