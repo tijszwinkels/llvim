@@ -1,0 +1,11 @@
+
+#!/bin/bash
+
+vimrc_path=~/.vimrc
+profile_path=~/.profile
+
+# Add line to ~/.vimrc
+echo "source ~/llvim/today/.vimrc" >> "$vimrc_path"
+
+# Add line to ~/.profile
+echo "source ~/llvim/today/.profile" >> "$profile_path"

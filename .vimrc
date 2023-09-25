@@ -1,3 +1,4 @@
+
 " Generic
 
 command! RD :redraw!
@@ -26,7 +27,7 @@ function! s:RunLLM(model_flag)
     call writefile(split(l:yanked_text, '\n'), l:temp_in)
 
     " Run the llm command and pipe the yank buffer through it
-    execute "!cat " . l:temp_in . " | llm " . a:model_flag . " > " . l:temp_out
+    execute "!cat " . l:temp_in . " | llm " . a:model_flag . " | tee " . l:temp_out
 
     " Read the output back into Vim at the current cursor position
     execute "r " . l:temp_out
@@ -103,8 +104,11 @@ function! YankCodeBlock()
 	execute l:found+1 . "," . l:found_end . "yank"
     endif
 
-    " Restore the cursor position
-    call setpos('.', l:save_cursor)
+    " Go to the closing tag
+     call search('```') 
+
+    " Restore the cursor position (Disabled)
+    " call setpos('.', l:save_cursor)
     
 endfunction 
 
@@ -149,3 +153,28 @@ function! s:RunCode(type)
     " Add the prefix to the output
     execute "normal! " . l:prefix
 endfunction
+
+
+" Key mappings
+" ctrl-m for yank up till prev ### and run through gpt-3.5
+nnoremap <C-m> :execute 'normal! o'<CR>:YH<CR>:LLM<CR>
+" ctrl-l for yank up till prev ### and run through gpt-4
+nnoremap <C-l> :execute 'normal! o'<CR>:YH<CR>:LLM4<CR>
+" ctrl-n for new LLM interaction block
+nnoremap <C-n> Go<CR>###<ESC>G
+" ctrl-p for prompt
+nnoremap <C-p> :read ./default.prompt<CR>']j
+" ctrl-x for execute shell
+nnoremap <C-x> :execute 'normal! ?^```'<CR>jo<ESC>:sleep 50m<CR>:YC<CR>:SH<CR>
+
+
+" Copy the contents of the register to a certain file without opening the file
+function! RegToFile(filename)
+    let l:content = getreg('"')
+    call writefile(split(l:content, "\n"), a:filename)
+endfunction
+command! -nargs=1 -complete=file RegToFile call RegToFile(<f-args>)
+
+
+" Rename
+command! -nargs=1 Rename execute 'saveas ' . <f-args> | silent !rm #
