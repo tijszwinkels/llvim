@@ -1,0 +1,26 @@
+#!/bin/bash
+# llvim-to-git (no arguments) - Copy files and specified subdirectories from ~/llvim to ~/projects/llvim, adds files to git in an unstaged manner, views changes in git including new files, saves these changes to a file, generates a commit message with llm, and commits the changes
+
+# Copy files and specific subdirectories from ~/llvim to ~/projects/llvim
+cp ~/llvim/.* ~/projects/llvim/
+cp ~/llvim/* ~/projects/llvim/
+cp -R ~/llvim/skills/ ~/projects/llvim/skills/
+cp -R ~/llvim/templates/ ~/projects/llvim/templates/
+
+# Navigate to the llvim git repo
+cd ~/projects/llvim
+
+# Add files to git in an unstaged manner, so they still appear in git diff
+git add . --intent-to-add
+
+# Generate a diff, including new files, and write to a file
+git diff > /tmp/changes
+
+# Generate a professional commit message with llm
+commit_message=$(cat /tmp/changes | llm -s "Generate a professional commit message for these changes")
+
+# Add all files to git
+git add .
+
+# Commit the changes
+git commit -m "$commit_message"
