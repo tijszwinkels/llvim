@@ -1,0 +1,28 @@
+#!/bin/bash
+# update-todo (instructions) - Updates todo.txt according to the passed instructions
+# Afterwards, it will ask for final confirmation before rewriting the file
+
+if [ -z "$1" ]
+then
+    echo "No instructions provided. usage: update-todo instructions"
+    exit 1
+fi
+
+PROMPT="Update my todo list according to the following instructions: \"$@\". Keep the whole format the same, including the legend at the top."
+
+echo $PROMPT
+
+UPDATED=$(cat ./todo.txt | llm -s "$PROMPT")
+
+cat << EOF
+$UPDATED
+EOF
+
+read -p "Is this correct? y/N: " confirm
+
+if [[ $confirm =~ ^[Yy]$ ]]
+then
+    echo "$UPDATED" > todo.txt
+else
+    echo "The todo list wasn't updated."
+fi
