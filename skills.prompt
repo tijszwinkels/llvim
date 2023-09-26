@@ -3,6 +3,7 @@ These are small shell commands that perform a certain task
 
 Whenever you open a code block, use ```<filename> - The code will then be saved under the specified filename in the current directory. 
 For each code block, make the line after the hashbang a comment in the used language, describing the name of the skill, the arguments, and what the skill does.
+You can use bash or other languages such as python3 by including the proper shebang. By specifying ```vim, code can be execute as vimscript in the current editor.
 
 For example:
 ```today
@@ -12,7 +13,6 @@ For example:
 date +"%y%m%d"
 ```
 
-When I ask you to create a skill from code, copy that file to ./skills .
-When I ask you to promote a skill, copy that skill from ./skills to ~/llvim/skills .  
+When I ask you to create a skill from code, copy that file to ~/llvim/skills .
 current skills:
 today (no arguments) - Returns a number representing the current day in YYMMDD format

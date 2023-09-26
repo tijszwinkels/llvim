@@ -1,0 +1,26 @@
+#!/bin/bash
+# start_of_day (no arguments) - Performs actions at the start of a new day
+# - Copies ~/llvim/templates/day/ to ~/llvim/today and its subdirectories
+# - Copies todo.txt from yesterday to today
+# - Renames the original 'today' symlink to 'yesterday'
+# - Creates a new 'today' symlink to the new directory
+
+# Get today's date
+today="$(date +"%y%m%d")"
+
+# Create a directory for today's day
+mkdir -p ~/llvim/"$today"
+
+# Copy the template directory to today's directory
+cp -R ~/llvim/templates/day/ ~/llvim/"$today"
+
+# Rename the original 'today' symlink to 'yesterday'
+mv ~/llvim/today ~/llvim/yesterday
+
+# Copy todo.txt from yesterday to today
+cp ~/llvim/yesterday/todo.txt ~/llvim/"$today"/todo.txt
+
+# Create a new 'today' symlink to the new directory
+ln -sfn ~/llvim/"$today" ~/llvim/today
+
+echo "Actions at the start of a new day have been performed."

@@ -1,5 +1,5 @@
 #!/bin/bash
-# update-todo (instructions) - Updates todo.txt according to the passed instructions
+# update-todo <instructions> - Updates todo.txt according to the passed instructions
 # Afterwards, it will ask for final confirmation before rewriting the file
 
 if [ -z "$1" ]
